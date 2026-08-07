@@ -1,11 +1,11 @@
-import Navbar from "./components/Navbar"
+import Hero from "./components/Hero";
 
 function App() {
   return (
-    <div className="min-h-screen bg-black">
-      <Navbar />
+    <div className="bg-black text-white min-h-screen">
+      <Hero />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
