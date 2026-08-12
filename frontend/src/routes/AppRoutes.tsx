@@ -1,6 +1,6 @@
-import AppShell from "../components/AppShell";
+import AdminKYC from "../pages/AdminKYC";import AppShell from "../components/AppShell";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import KYC from "../pages/KYC";
 import Home from "../pages/Home";
 import Markets from "../pages/Markets";
 import About from "../pages/About";
@@ -24,7 +24,6 @@ import AdminUser from "../pages/AdminUser";
 import AdminWallets from "../pages/AdminWallets";
 import AdminDeposits from "../pages/AdminDeposits";
 import AdminWithdrawals from "../pages/AdminWithdrawals";
-
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -59,7 +58,10 @@ function AppRoutes() {
           path="/contact"
           element={<Contact />}
         />
-
+<Route
+  path="/kyc"
+  element={<KYC />}
+/>
         <Route
           path="/login"
           element={<Login />}
@@ -109,7 +111,10 @@ function AppRoutes() {
             path="/withdraw"
             element={<Withdraw />}
           />
-
+<Route
+  path="/admin/kyc"
+  element={<AdminKYC />}
+/>
           <Route
             path="/transactions"
             element={<Transactions />}

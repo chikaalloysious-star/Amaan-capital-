@@ -431,7 +431,22 @@ function Admin() {
               )}
 
             </Link>
+<Link
+  to="/admin/kyc"
+  className="bg-gray-900/70 border border-gray-800 rounded-2xl p-6 hover:border-yellow-500/40 transition"
+>
+  <div className="text-3xl mb-4">
+    🪪
+  </div>
 
+  <h3 className="font-bold text-lg">
+    KYC Verification
+  </h3>
+
+  <p className="text-gray-500 text-sm mt-2">
+    Review and approve user identity verification applications.
+  </p>
+</Link>
             <Link
               to="/admin/withdrawals"
               className="bg-gray-900/70 border border-gray-800 rounded-2xl p-6 hover:border-yellow-500/40 transition"

@@ -19,11 +19,11 @@ function AppShell() {
     { label: t.transactions, icon: "▤", path: "/transactions" },
   ];
 
-  const accountNavigation = [
-    { label: t.profile, icon: "◉", path: "/profile" },
-    { label: t.settings, icon: "⚙", path: "/settings" },
-  ];
-
+const accountNavigation = [
+  { label: t.profile, icon: "◉", path: "/profile" },
+  { label: "KYC Verification", icon: "✓", path: "/kyc" },
+  { label: t.settings, icon: "⚙", path: "/settings" },
+];
   const isActive = (path: string) => {
     if (path === "/dashboard") {
       return location.pathname === "/dashboard";
@@ -246,8 +246,7 @@ function AppShell() {
       {/* MOBILE BOTTOM NAVIGATION */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-800 bg-black/95 backdrop-blur lg:hidden">
 
-        <div className="grid grid-cols-4 px-2 py-2">
-
+<div className="grid grid-cols-5 px-2 py-2">
           <Link
             to="/dashboard"
             className={`flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold ${
@@ -283,7 +282,17 @@ function AppShell() {
             <span className="text-lg">◆</span>
             {t.investments}
           </Link>
-
+          <Link
+            to="/kyc"
+            className={`flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold ${
+              isActive("/kyc")
+                ? "text-yellow-400"
+                : "text-gray-500"
+            }`}
+          >
+            <span className="text-lg">✓</span>
+            KYC
+          </Link>
           <Link
             to="/profile"
             className={`flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold ${
