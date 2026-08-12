@@ -1,10 +1,11 @@
-import Hero from "./components/Hero";
+import AppRoutes from "./routes/AppRoutes";
+import { LanguageProvider } from "./i18n/LanguageContext";
 
 function App() {
   return (
-    <div className="bg-black text-white min-h-screen">
-      <Hero />
-    </div>
+    <LanguageProvider>
+      <AppRoutes />
+    </LanguageProvider>
   );
 }
 
