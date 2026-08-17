@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-import FloatingCustomerCare from "../components/FloatingCustomerCare";
 
 type KYCStatus =
   | "not_submitted"
@@ -216,7 +215,6 @@ function KYC() {
   if (status === "approved") {
     return (
       <div className="min-h-screen bg-black text-white">
-      <FloatingCustomerCare />
         <main className="mx-auto max-w-3xl px-6 py-12">
           <div className="rounded-3xl border border-green-500/20 bg-green-500/10 p-8 text-center">
             <div className="text-5xl">✓</div>

@@ -10,7 +10,7 @@ function GrowthPartners() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <main className="mx-auto max-w-6xl px-6 py-14 md:px-10">
+      <div className="mx-auto max-w-6xl px-6 py-12 md:px-10">
         <p className="text-sm font-bold uppercase tracking-[0.2em] text-yellow-400">
           Amaan Capital
         </p>
@@ -20,8 +20,8 @@ function GrowthPartners() {
         </h1>
 
         <p className="mt-5 max-w-3xl text-lg leading-8 text-gray-400">
-          Become part of the Amaan Capital growth network and help introduce
-          our platform to people and communities in your locality.
+          Join the Amaan Capital growth network and help introduce our
+          platform to people and communities in your locality.
         </p>
 
         <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -30,7 +30,7 @@ function GrowthPartners() {
             <h2 className="mt-5 text-xl font-bold">Community Outreach</h2>
             <p className="mt-3 text-sm leading-6 text-gray-500">
               Introduce Amaan Capital to interested people and help them
-              understand our platform and available services.
+              understand the platform and available services.
             </p>
           </div>
 
@@ -38,8 +38,8 @@ function GrowthPartners() {
             <div className="text-4xl">🤝</div>
             <h2 className="mt-5 text-xl font-bold">Partner Network</h2>
             <p className="mt-3 text-sm leading-6 text-gray-500">
-              Work with Amaan Capital as part of a growing regional network of
-              approved partners and ambassadors.
+              Work with Amaan Capital as part of an approved regional network
+              of partners and ambassadors.
             </p>
           </div>
 
@@ -77,12 +77,15 @@ function GrowthPartners() {
                 Application Received
               </h3>
               <p className="mt-2 text-gray-400">
-                Thank you for your interest in becoming an Amaan Capital
-                Growth Partner. Our team will review your application.
+                Thank you for your interest. Our team will review your
+                application.
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="mt-6 grid gap-5 md:grid-cols-2">
+            <form
+              onSubmit={handleSubmit}
+              className="mt-6 grid gap-5 md:grid-cols-2"
+            >
               <input
                 required
                 name="name"
@@ -122,7 +125,7 @@ function GrowthPartners() {
 
               <button
                 type="submit"
-                className="md:col-span-2 rounded-2xl bg-yellow-400 px-6 py-4 font-extrabold text-black transition hover:bg-yellow-300"
+                className="md:col-span-2 rounded-2xl bg-yellow-400 px-6 py-4 font-extrabold text-black"
               >
                 Submit Partner Application
               </button>
@@ -133,11 +136,9 @@ function GrowthPartners() {
         <p className="mt-8 text-xs leading-6 text-gray-600">
           Partner approval is not automatic. Applications may be reviewed
           based on location, experience, suitability, compliance requirements,
-          and Amaan Capital's current expansion needs. Participation,
-          compensation, and referral arrangements are subject to applicable
-          agreements and laws.
+          and current expansion needs.
         </p>
-      </main>
+      </div>
     </div>
   );
 }

@@ -13,7 +13,6 @@ import Plans from "../pages/Plans";
 import Contact from "../pages/Contact";
 import Opportunities from "../pages/Opportunities";
 import Terms from "../pages/Terms";
-import Help from "../pages/Help";
 import GrowthPartners from "../pages/GrowthPartners";
 import FAQ from "../pages/FAQ";
 import Login from "../pages/Login";
@@ -112,10 +111,6 @@ function AppRoutes() {
           element={<GrowthPartners />}
         />
 
-        <Route
-          path="/help"
-          element={<Help />}
-        />
 <Route
   path="/kyc"
   element={<KYC />}

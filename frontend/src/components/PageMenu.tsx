@@ -64,7 +64,6 @@ function PageMenu() {
       items: [
         { icon: "ℹ️", label: "About Amaan Capital", path: "/about" },
         { icon: "❓", label: "FAQ", path: "/faq" },
-        { icon: "🛟", label: "Customer Care", path: "/help" },
         { icon: "📞", label: "Contact", path: "/contact" },
         { icon: "🔒", label: "Privacy Policy", path: "/privacy" },
         { icon: "📄", label: "Terms & Conditions", path: "/terms" },

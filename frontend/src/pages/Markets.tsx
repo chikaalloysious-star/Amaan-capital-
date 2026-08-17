@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
-import FloatingCustomerCare from "../components/FloatingCustomerCare";
 
 type Coin = {
   id: string;
@@ -117,7 +116,6 @@ function Markets() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <FloatingCustomerCare />
       <header className="border-b border-yellow-500/20 bg-black">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <div>

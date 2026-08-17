@@ -57,17 +57,6 @@ function Terms() {
             </p>
           </section>
 
-          <section className="rounded-3xl border border-yellow-400/20 bg-yellow-400/5 p-6">
-            <h2 className="text-xl font-bold text-yellow-400">
-              5. Investment Risk
-            </h2>
-            <p className="mt-3 leading-7 text-gray-300">
-              Digital assets and investment activities involve financial risk.
-              Market conditions can change rapidly and losses may occur. Past
-              performance does not guarantee future results.
-            </p>
-          </section>
-
           <section className="rounded-3xl border border-gray-800 bg-gray-950 p-6">
             <h2 className="text-xl font-bold">6. Prohibited Activities</h2>
             <p className="mt-3 leading-7 text-gray-400">

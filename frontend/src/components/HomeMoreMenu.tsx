@@ -26,7 +26,6 @@ function HomeMoreMenu() {
   const items = [
     { icon: "❓", label: "FAQ", path: "/faq" },
     { icon: "🎁", label: "Referral Program", path: "/referral" },
-    { icon: "🛟", label: "Customer Care", path: "/help" },
     {
       icon: "📣",
       label: "Local Growth Partners — Hiring",
