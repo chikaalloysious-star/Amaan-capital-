@@ -1,34 +1,11 @@
 import { useState } from "react";
-import { supabase } from "../lib/supabase";
 
 function GrowthPartners() {
   const [submitted, setSubmitted] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-
-    const { error } = await supabase
-      .from("growth_partner_applications")
-      .insert({
-        full_name: formData.get("name"),
-        email: formData.get("email"),
-        location: formData.get("location"),
-        country: formData.get("country"),
-        experience: formData.get("experience"),
-        status: "pending",
-      });
-
-    if (error) {
-      console.error("Growth partner application error:", error);
-      alert(error.message);
-      return;
-    }
-
     setSubmitted(true);
-    form.reset();
   }
 
   return (
