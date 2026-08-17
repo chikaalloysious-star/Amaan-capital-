@@ -355,15 +355,43 @@ function AdminGrowthPartners() {
                       </td>
 
                       <td className="px-5 py-5">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setSelected(application)
-                          }
-                          className="rounded-xl border border-gray-700 px-4 py-2 text-sm font-bold hover:border-yellow-400 hover:text-yellow-400"
-                        >
-                          View
-                        </button>
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setSelected(application)
+                            }
+                            className="rounded-xl border border-gray-700 px-4 py-2 text-sm font-bold hover:border-yellow-400 hover:text-yellow-400"
+                          >
+                            View
+                          </button>
+
+                          {application.status !== "approved" && (
+                            <button
+                              type="button"
+                              disabled={updating}
+                              onClick={() =>
+                                updateStatus(application, "approved")
+                              }
+                              className="rounded-xl border border-green-500/30 px-4 py-2 text-sm font-bold text-green-400 hover:bg-green-500/10 disabled:opacity-50"
+                            >
+                              Approve
+                            </button>
+                          )}
+
+                          {application.status !== "rejected" && (
+                            <button
+                              type="button"
+                              disabled={updating}
+                              onClick={() =>
+                                updateStatus(application, "rejected")
+                              }
+                              className="rounded-xl border border-red-500/30 px-4 py-2 text-sm font-bold text-red-400 hover:bg-red-500/10 disabled:opacity-50"
+                            >
+                              Reject
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))
