@@ -1,76 +1,50 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 type Notification = {
   id: string;
-  type: string;
-  title: string;
-  message: string;
+  title: string | null;
+  message: string | null;
   is_read: boolean;
   created_at: string;
 };
 
 function Notifications() {
-  const navigate = useNavigate();
-
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
-  const [working, setWorking] = useState(false);
-  const [error, setError] = useState("");
 
-  const loadNotifications = useCallback(async () => {
-    try {
-      setError("");
-
+  useEffect(() => {
+    async function loadNotifications() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
       if (!user) {
-        navigate("/login");
+        setLoading(false);
         return;
       }
 
-      const { data, error: notificationError } = await supabase
+      const { data, error } = await supabase
         .from("notifications")
-        .select(
-          "id,type,title,message,is_read,created_at"
-        )
+        .select("id,title,message,is_read,created_at")
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
-      if (notificationError) {
-        throw notificationError;
+      if (!error) {
+        setNotifications(data || []);
       }
 
-      setNotifications(data || []);
-    } catch (err) {
-      console.error("Notifications loading error:", err);
-
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Unable to load notifications."
-      );
-    } finally {
       setLoading(false);
     }
-  }, [navigate]);
 
-  useEffect(() => {
     loadNotifications();
-  }, [loadNotifications]);
+  }, []);
 
   async function markAsRead(id: string) {
-    const { error: updateError } = await supabase
+    await supabase
       .from("notifications")
       .update({ is_read: true })
       .eq("id", id);
-
-    if (updateError) {
-      setError(updateError.message);
-      return;
-    }
 
     setNotifications((current) =>
       current.map((notification) =>
@@ -82,200 +56,105 @@ function Notifications() {
   }
 
   async function markAllAsRead() {
-    const unread = notifications.filter(
-      (notification) => !notification.is_read
-    );
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (unread.length === 0) return;
+    if (!user) return;
 
-    try {
-      setWorking(true);
-      setError("");
+    await supabase
+      .from("notifications")
+      .update({ is_read: true })
+      .eq("user_id", user.id)
+      .eq("is_read", false);
 
-      const { error: updateError } = await supabase
-        .from("notifications")
-        .update({ is_read: true })
-        .eq("is_read", false);
-
-      if (updateError) {
-        throw updateError;
-      }
-
-      setNotifications((current) =>
-        current.map((notification) => ({
-          ...notification,
-          is_read: true,
-        }))
-      );
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Unable to mark notifications as read."
-      );
-    } finally {
-      setWorking(false);
-    }
-  }
-
-  function notificationIcon(type: string) {
-    const value = type.toLowerCase();
-
-    if (value.includes("deposit")) return "↓";
-    if (value.includes("withdraw")) return "↑";
-    if (value.includes("investment")) return "◆";
-    if (value.includes("security")) return "🔐";
-
-    return "🔔";
-  }
-
-  const unreadCount = notifications.filter(
-    (notification) => !notification.is_read
-  ).length;
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="text-yellow-400 font-semibold">
-          Loading notifications...
-        </p>
-      </div>
+    setNotifications((current) =>
+      current.map((notification) => ({
+        ...notification,
+        is_read: true,
+      }))
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <main className="mx-auto max-w-4xl px-5 py-8 md:px-8 md:py-12">
-
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-
+    <div className="min-h-screen bg-black px-5 py-8 text-white">
+      <div className="mx-auto max-w-3xl">
+        <div className="mb-8 flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-yellow-400">
+            <p className="text-xs font-bold uppercase tracking-widest text-yellow-400">
               Amaan Capital
             </p>
-
-            <h1 className="mt-2 text-3xl font-extrabold md:text-5xl">
+            <h1 className="mt-2 text-3xl font-extrabold">
               Notifications
             </h1>
-
-            <p className="mt-3 text-gray-400">
-              Stay updated about your account and transactions.
-            </p>
           </div>
 
-          {unreadCount > 0 && (
+          {notifications.some((notification) => !notification.is_read) && (
             <button
               type="button"
               onClick={markAllAsRead}
-              disabled={working}
-              className="rounded-xl border border-yellow-400/30 px-4 py-3 text-sm font-semibold text-yellow-400 hover:bg-yellow-400/10 disabled:opacity-50"
+              className="rounded-xl border border-gray-800 px-4 py-2 text-sm font-semibold text-gray-300 hover:border-yellow-400 hover:text-yellow-400"
             >
-              {working
-                ? "Updating..."
-                : `Mark all as read (${unreadCount})`}
+              Mark all read
             </button>
           )}
         </div>
 
-        {error && (
-          <div className="mt-6 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400">
-            {error}
+        {loading ? (
+          <div className="rounded-2xl border border-gray-800 bg-gray-950 p-8 text-center text-yellow-400">
+            Loading notifications...
           </div>
-        )}
-
-        {notifications.length === 0 ? (
-          <section className="mt-8 rounded-3xl border border-gray-800 bg-gray-950 p-10 text-center">
-            <div className="text-5xl">🔔</div>
-
-            <h2 className="mt-5 text-xl font-bold">
-              No notifications yet
+        ) : notifications.length === 0 ? (
+          <div className="rounded-2xl border border-gray-800 bg-gray-950 p-10 text-center">
+            <div className="text-4xl">🔔</div>
+            <h2 className="mt-4 text-xl font-bold">
+              No notifications
             </h2>
-
-            <p className="mt-2 text-gray-500">
-              Important account and transaction updates will appear here.
+            <p className="mt-2 text-sm text-gray-500">
+              You&apos;re all caught up.
             </p>
-          </section>
+          </div>
         ) : (
-          <section className="mt-8 space-y-3">
+          <div className="space-y-3">
             {notifications.map((notification) => (
-              <article
+              <button
                 key={notification.id}
-                className={`rounded-2xl border p-5 transition ${
+                type="button"
+                onClick={() => markAsRead(notification.id)}
+                className={`w-full rounded-2xl border p-5 text-left transition ${
                   notification.is_read
                     ? "border-gray-800 bg-gray-950"
-                    : "border-yellow-400/30 bg-yellow-400/5"
+                    : "border-yellow-500/30 bg-yellow-500/5"
                 }`}
               >
-                <div className="flex gap-4">
+                <div className="flex items-start gap-4">
+                  <span className="mt-1 text-xl">🔔</span>
 
-                  <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg ${
-                      notification.is_read
-                        ? "bg-gray-900 text-gray-400"
-                        : "bg-yellow-400 text-black"
-                    }`}
-                  >
-                    {notificationIcon(notification.type)}
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                      <div>
-                        <h2 className="font-bold">
-                          {notification.title}
-                        </h2>
-
-                        <p className="mt-1 text-sm text-gray-400">
-                          {notification.message}
-                        </p>
-                      </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between gap-3">
+                      <h2 className="font-bold">
+                        {notification.title || "Notification"}
+                      </h2>
 
                       {!notification.is_read && (
-                        <span className="inline-flex w-fit rounded-full bg-yellow-400 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-black">
-                          New
-                        </span>
+                        <span className="h-2 w-2 shrink-0 rounded-full bg-yellow-400" />
                       )}
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between gap-3">
+                    <p className="mt-2 text-sm leading-6 text-gray-400">
+                      {notification.message || ""}
+                    </p>
 
-                      <p className="text-xs text-gray-600">
-                        {new Date(
-                          notification.created_at
-                        ).toLocaleString()}
-                      </p>
-
-                      {!notification.is_read && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            markAsRead(notification.id)
-                          }
-                          className="text-xs font-semibold text-yellow-400 hover:text-yellow-300"
-                        >
-                          Mark as read
-                        </button>
-                      )}
-
-                    </div>
+                    <p className="mt-3 text-xs text-gray-600">
+                      {new Date(notification.created_at).toLocaleString()}
+                    </p>
                   </div>
                 </div>
-              </article>
+              </button>
             ))}
-          </section>
+          </div>
         )}
-
-        <div className="mt-8">
-          <Link
-            to="/settings"
-            className="text-sm font-semibold text-gray-500 hover:text-white"
-          >
-            ← Back to Settings
-          </Link>
-        </div>
-
-      </main>
+      </div>
     </div>
   );
 }

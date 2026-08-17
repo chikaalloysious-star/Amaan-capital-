@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useLanguage } from "../i18n/LanguageContext";
+import NotificationBell from "./NotificationBell";
+import PageMenu from "./PageMenu";
 
 function AppShell() {
   const location = useLocation();
@@ -9,8 +11,11 @@ function AppShell() {
   const { t } = useLanguage();
 
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [announcement, setAnnouncement] = useState("");
+  const [announcementDismissed, setAnnouncementDismissed] = useState(false);
 
   const navigation = [
+    { label: "Referral Program", icon: "🎁", path: "/referral" },
     { label: t.home, icon: "⌂", path: "/dashboard" },
     { label: t.markets, icon: "↗", path: "/markets" },
     { label: t.investments, icon: "◆", path: "/investments" },
@@ -34,6 +39,29 @@ const accountNavigation = [
       location.pathname.startsWith(`${path}/`)
     );
   };
+
+  useEffect(() => {
+    async function loadAnnouncement() {
+      try {
+        const { data, error } = await supabase
+          .from("platform_settings")
+          .select("announcement")
+          .limit(1)
+          .maybeSingle();
+
+        if (error) {
+          console.error("Load platform announcement error:", error);
+          return;
+        }
+
+        setAnnouncement(String(data?.announcement || "").trim());
+      } catch (error) {
+        console.error("Load platform announcement error:", error);
+      }
+    }
+
+    loadAnnouncement();
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -225,19 +253,44 @@ const accountNavigation = [
       {/* MAIN APPLICATION AREA */}
       <div className="lg:pl-64">
 
-        {/* MOBILE TOP BAR */}
-        <header className="sticky top-0 z-40 border-b border-gray-800 bg-black/95 backdrop-blur lg:hidden">
-          <div className="flex items-center px-5 py-4">
-            <Link
-              to="/dashboard"
-              className="text-xl font-extrabold text-yellow-400"
-            >
-              Amaan Capital
-            </Link>
-          </div>
-        </header>
+{/* APPLICATION TOP BAR */}
+<header className="sticky top-0 z-40 border-b border-gray-800 bg-black/95 backdrop-blur">
+  <div className="flex items-center justify-between px-5 py-4">
+    <Link
+      to="/dashboard"
+      className="text-xl font-extrabold text-yellow-400"
+    >
+      Amaan Capital
+    </Link>
 
+    <div className="flex items-center gap-2">
+      <NotificationBell />
+      <PageMenu />
+    </div>
+  </div>
+</header>
         <main className="pb-24 lg:pb-0">
+          {announcement && !announcementDismissed && (
+            <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
+              <div className="relative rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 pr-12 text-yellow-200">
+                <p className="text-xs font-bold uppercase tracking-widest text-yellow-400">
+                  Amaan Capital Announcement
+                </p>
+                <p className="mt-1 text-sm leading-6">
+                  {announcement}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setAnnouncementDismissed(true)}
+                  className="absolute right-3 top-3 rounded-lg px-2 py-1 text-lg text-yellow-400 hover:bg-yellow-400/10"
+                  aria-label="Dismiss announcement"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          )}
+
           <Outlet />
         </main>
 

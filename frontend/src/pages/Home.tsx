@@ -3,7 +3,7 @@ import Hero from "../components/Hero";
 
 function Home() {
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="min-h-screen bg-black text-white">
       <Navbar />
       <Hero />
     </div>

@@ -328,6 +328,33 @@ function Dashboard() {
 
         </section>
 
+        {/* REFERRAL PROGRAM */}
+
+        <section className="mt-6 rounded-3xl border border-yellow-500/20 bg-gray-950 p-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-widest text-yellow-400">
+                Referral Program
+              </p>
+              <h2 className="mt-2 text-2xl font-extrabold">
+                Invite & Earn
+              </h2>
+              <p className="mt-2 text-sm text-gray-400">
+                Invite friends to Amaan Capital and earn referral rewards.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate("/referral")}
+              className="rounded-xl bg-yellow-400 px-6 py-3 font-bold text-black hover:bg-yellow-300"
+            >
+              Open Referral Program
+            </button>
+          </div>
+        </section>
+
+
         {/* ERRORS */}
 
         {balanceError && (

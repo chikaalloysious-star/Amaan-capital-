@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 function Register() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const referralCode = searchParams.get("ref")?.trim().toUpperCase() || "";
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -63,7 +65,7 @@ function Register() {
           password,
           options: {
             data: {
-              full_name: fullName.trim(),
+              referral_code: referralCode || null,
               phone: phone.trim(),
             },
           },
@@ -74,6 +76,19 @@ function Register() {
       }
 
       if (data.session) {
+        if (referralCode) {
+          const { error: referralError } = await supabase.rpc(
+            "apply_referral_code",
+            {
+              p_code: referralCode,
+            }
+          );
+
+          if (referralError) {
+            console.error("Referral application error:", referralError);
+          }
+        }
+
         navigate("/dashboard");
         return;
       }

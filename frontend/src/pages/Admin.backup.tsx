@@ -43,11 +43,6 @@ function Admin() {
 
   const [error, setError] = useState("");
 
-  const [referralMilestones, setReferralMilestones] = useState<any[]>([]);
-  const [referralRewards, setReferralRewards] = useState<any[]>([]);
-  const [loadingReferrals, setLoadingReferrals] = useState(false);
-  const [referralError, setReferralError] = useState("");
-
   const loadUsers = useCallback(async () => {
     setLoadingUsers(true);
 
@@ -116,48 +111,14 @@ function Admin() {
     }
   }, []);
 
-  const loadReferralManagement = useCallback(async () => {
-    setLoadingReferrals(true);
-    setReferralError("");
-
-    try {
-      const { data, error: referralRpcError } =
-        await supabase.rpc("get_admin_referral_milestones");
-
-      if (referralRpcError) throw referralRpcError;
-
-      setReferralMilestones(data || []);
-
-      const { data: rewards, error: rewardsError } =
-        await supabase
-          .from("referral_rewards")
-          .select("id,referral_id,referrer_id,referred_id,amount,currency,status,created_at")
-          .order("created_at", { ascending: false });
-
-      if (rewardsError) throw rewardsError;
-
-      setReferralRewards(rewards || []);
-    } catch (err) {
-      setReferralError(
-        err instanceof Error
-          ? err.message
-          : "Unable to load referral information."
-      );
-    } finally {
-      setLoadingReferrals(false);
-    }
-  }, []);
-
-
   const refreshDashboard = useCallback(async () => {
     setError("");
 
     await Promise.all([
       loadUsers(),
       loadStats(),
-      loadReferralManagement(),
     ]);
-  }, [loadUsers, loadStats, loadReferralManagement]);
+  }, [loadUsers, loadStats]);
 
   useEffect(() => {
     async function initializeAdmin() {
@@ -552,90 +513,6 @@ function Admin() {
           </div>
 
         </section>
-
-        {/* REFERRAL MANAGEMENT */}
-
-        <section className="mt-10">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
-            <div>
-              <h2 className="text-2xl font-bold">Referral Management</h2>
-              <p className="text-gray-500 text-sm mt-1">Monitor referral milestones and referral rewards.</p>
-            </div>
-
-            <button
-              onClick={loadReferralManagement}
-              disabled={loadingReferrals}
-              className="bg-yellow-400 text-black px-5 py-2 rounded-xl font-bold hover:bg-yellow-300 transition disabled:opacity-50"
-            >
-              {loadingReferrals ? "Refreshing..." : "Refresh Referrals"}
-            </button>
-          </div>
-
-          {referralMilestones.length > 0 && (
-            <p className="mb-5 text-xs text-gray-500">
-              Referral milestone configuration loaded successfully.
-            </p>
-          )}
-          {referralError && (
-            <div className="mb-5 border border-red-500/30 bg-red-500/10 rounded-2xl p-5 text-red-300">
-              <p className="font-semibold">Referral Error</p>
-              <p className="text-sm mt-1">{referralError}</p>
-            </div>
-          )}
-
-          <div className="grid md:grid-cols-2 gap-5">
-            <div className="bg-gray-900/70 border border-gray-800 rounded-2xl p-6">
-              <p className="text-gray-500 text-sm">10 Referral Milestone</p>
-              <p className="text-3xl font-bold text-yellow-400 mt-2">10 users</p>
-              <p className="text-gray-500 text-sm mt-2">Each referred user must invest at least 100 USDT.</p>
-              <p className="text-green-400 text-sm font-semibold mt-3">Reward: Beginner Plan</p>
-            </div>
-
-            <div className="bg-gray-900/70 border border-gray-800 rounded-2xl p-6">
-              <p className="text-gray-500 text-sm">20 Referral Milestone</p>
-              <p className="text-3xl font-bold text-yellow-400 mt-2">20 users</p>
-              <p className="text-gray-500 text-sm mt-2">Each referred user must invest at least 1,000 USDT.</p>
-              <p className="text-green-400 text-sm font-semibold mt-3">Reward: 1,000 USDT Plan</p>
-            </div>
-          </div>
-
-          <div className="mt-5 bg-gray-900/70 border border-gray-800 rounded-2xl overflow-hidden">
-            <div className="p-6 border-b border-gray-800">
-              <h3 className="font-bold text-lg">Referral Activity</h3>
-              <p className="text-gray-500 text-sm mt-1">Recent referral rewards recorded by the system.</p>
-            </div>
-
-            {loadingReferrals ? (
-              <div className="p-8 text-center text-yellow-400">Loading referral information...</div>
-            ) : referralRewards.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">No referral rewards recorded yet.</div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="border-b border-gray-800">
-                    <tr>
-                      <th className="px-6 py-4 text-gray-500 text-sm">Referrer</th>
-                      <th className="px-6 py-4 text-gray-500 text-sm">Amount</th>
-                      <th className="px-6 py-4 text-gray-500 text-sm">Status</th>
-                      <th className="px-6 py-4 text-gray-500 text-sm">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {referralRewards.map((reward) => (
-                      <tr key={reward.id} className="border-b border-gray-800/70 last:border-0">
-                        <td className="px-6 py-5 text-gray-400 text-xs">{reward.referrer_id}</td>
-                        <td className="px-6 py-5 font-semibold">{reward.amount} {reward.currency}</td>
-                        <td className="px-6 py-5 text-sm">{reward.status}</td>
-                        <td className="px-6 py-5 text-gray-500 text-sm">{new Date(reward.created_at).toLocaleDateString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </section>
-
 
         {/* REGISTERED USERS */}
 

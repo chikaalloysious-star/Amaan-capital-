@@ -18,10 +18,6 @@ function Settings() {
 
   const { language, setLanguage, t } = useLanguage();
 
-  const [currency, setCurrency] = useState(
-    () => localStorage.getItem("amaan_currency") || "USDT"
-  );
-
   const [notifications, setNotifications] = useState(
     () => localStorage.getItem("amaan_notifications") !== "false"
   );
@@ -79,7 +75,6 @@ function Settings() {
   }
 
   function savePreferences() {
-    localStorage.setItem("amaan_currency", currency);
     localStorage.setItem(
       "amaan_notifications",
       String(notifications)
@@ -201,34 +196,6 @@ function Settings() {
                 {item}
               </option>
             ))}
-          </select>
-        </section>
-
-        {/* CURRENCY */}
-
-        <section className="mt-6 rounded-3xl border border-gray-800 bg-gray-950 p-6 md:p-8">
-          <h2 className="text-xl font-bold">
-            {t.currency}
-          </h2>
-
-          <p className="mt-2 text-sm text-gray-500">
-            {t.currencyDescription}
-          </p>
-
-          <select
-            value={currency}
-            onChange={(event) =>
-              setCurrency(event.target.value)
-            }
-            className="mt-6 w-full rounded-xl border border-gray-700 bg-black px-4 py-4 text-white outline-none focus:border-yellow-400"
-          >
-            <option>USDT</option>
-            <option>USD</option>
-            <option>NGN</option>
-            <option>CHF</option>
-            <option>EUR</option>
-            <option>GBP</option>
-            <option>PHP</option>
           </select>
         </section>
 

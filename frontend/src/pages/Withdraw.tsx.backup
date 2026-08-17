@@ -148,22 +148,28 @@ function Withdraw() {
       }
 
       /*
-       * Withdrawal requests are created securely through the
-       * create_withdrawal database function.
+       * The current withdrawals table contains:
+       * user_id
+       * amount
+       * currency
+       * destination
+       * status
+       *
+       * So we insert only those fields.
        */
 
-      const { data: withdrawalId, error: withdrawalError } = await supabase.rpc("create_withdrawal", {
-        p_amount: withdrawalAmount,
-        p_currency: currency,
-        p_destination: walletAddress.trim(),
-      });
+      const { error: withdrawalError } = await supabase
+        .from("withdrawals")
+        .insert({
+          user_id: user.id,
+          amount: withdrawalAmount,
+          currency,
+          destination: walletAddress.trim(),
+          status: "pending",
+        });
 
       if (withdrawalError) {
         throw withdrawalError;
-      }
-
-      if (!withdrawalId) {
-        throw new Error("Unable to create withdrawal request.");
       }
 
       setAmount("");

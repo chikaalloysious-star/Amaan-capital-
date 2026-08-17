@@ -1,0 +1,233 @@
+import { Link } from "react-router-dom";
+type Course = {
+  icon: string;
+  level: string;
+  title: string;
+  description: string;
+  lessons: number;
+  status: "AVAILABLE" | "COMING SOON";
+};
+
+const courses: Course[] = [
+  {
+    icon: "🌱",
+    level: "BEGINNER",
+    title: "Crypto Fundamentals",
+    description:
+      "Understand cryptocurrency, blockchain, wallets, exchanges and the basic principles of digital assets.",
+    lessons: 8,
+    status: "AVAILABLE",
+  },
+  {
+    icon: "📊",
+    level: "INTERMEDIATE",
+    title: "Understanding Crypto Markets",
+    description:
+      "Learn how market capitalization, volume, liquidity, price movements and market cycles work.",
+    lessons: 10,
+    status: "COMING SOON",
+  },
+  {
+    icon: "🧠",
+    level: "ADVANCED",
+    title: "Market Analysis",
+    description:
+      "Explore technical analysis, market structure, indicators and risk-management concepts.",
+    lessons: 12,
+    status: "COMING SOON",
+  },
+];
+
+function Learn() {
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <main className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+
+        <section className="relative overflow-hidden rounded-[2rem] border border-yellow-400/20 bg-gradient-to-br from-yellow-400/10 via-gray-950 to-black p-7 md:p-12">
+          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-yellow-400/10 blur-3xl" />
+
+          <div className="relative max-w-4xl">
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-yellow-400">
+              Amaan Academy
+            </p>
+
+            <h1 className="mt-4 text-4xl font-extrabold leading-tight md:text-6xl">
+              Learn. Understand.
+              <span className="text-yellow-400"> Grow.</span>
+            </h1>
+
+            <p className="mt-5 max-w-3xl text-base leading-7 text-gray-400 md:text-lg">
+              Welcome to Amaan Learn — an educational hub designed to help
+              you understand cryptocurrency, digital assets and financial
+              markets step by step.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="#courses"
+                className="rounded-xl bg-yellow-400 px-5 py-3 text-sm font-extrabold text-black transition hover:bg-yellow-300"
+              >
+                Explore Courses
+              </a>
+
+              <Link
+                to="/opportunities"
+                className="rounded-xl border border-gray-700 px-5 py-3 text-sm font-bold text-gray-300 transition hover:border-yellow-400 hover:text-yellow-400"
+              >
+                Back to Opportunities
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-12">
+          <div className="grid gap-5 md:grid-cols-3">
+
+            <div className="rounded-3xl border border-gray-800 bg-gray-950 p-6">
+              <div className="text-3xl">📚</div>
+              <h2 className="mt-4 text-xl font-bold">
+                Structured Learning
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-gray-500">
+                Progress through carefully organized lessons instead of
+                trying to understand everything at once.
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-gray-800 bg-gray-950 p-6">
+              <div className="text-3xl">🧠</div>
+              <h2 className="mt-4 text-xl font-bold">
+                Build Understanding
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-gray-500">
+                Learn the concepts behind crypto markets so you can make
+                better-informed decisions.
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-gray-800 bg-gray-950 p-6">
+              <div className="text-3xl">🏅</div>
+              <h2 className="mt-4 text-xl font-bold">
+                Track Your Progress
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-gray-500">
+                Future learning progress, achievements and completion
+                certificates will be connected to your account.
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        <section id="courses" className="mt-14">
+          <div className="mb-7">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-yellow-400">
+              Academy
+            </p>
+
+            <h2 className="mt-2 text-3xl font-extrabold">
+              Learning Paths
+            </h2>
+
+            <p className="mt-2 max-w-2xl text-gray-500">
+              Start with the fundamentals and progress toward deeper market
+              knowledge.
+            </p>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-3">
+            {courses.map((course) => (
+              <div
+                key={course.title}
+                className="rounded-3xl border border-gray-800 bg-gray-950 p-6 transition hover:border-yellow-400/40"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black text-3xl ring-1 ring-gray-800">
+                    {course.icon}
+                  </div>
+
+                  <span
+                    className={`rounded-full px-3 py-1 text-[10px] font-extrabold tracking-wider ${
+                      course.status === "AVAILABLE"
+                        ? "bg-green-400/10 text-green-400"
+                        : "bg-yellow-400/10 text-yellow-400"
+                    }`}
+                  >
+                    {course.status}
+                  </span>
+                </div>
+
+                <p className="mt-6 text-[10px] font-bold tracking-[0.2em] text-yellow-400">
+                  {course.level}
+                </p>
+
+                <h3 className="mt-2 text-xl font-bold">
+                  {course.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-6 text-gray-500">
+                  {course.description}
+                </p>
+
+                <div className="mt-6 flex items-center justify-between border-t border-gray-800 pt-5">
+                  <span className="text-xs text-gray-600">
+                    {course.lessons} lessons
+                  </span>
+
+                  {course.status === "AVAILABLE" ? (
+<Link
+  to="/learn/crypto-fundamentals"
+  className="rounded-xl bg-yellow-400 px-4 py-2 text-xs font-extrabold text-black hover:bg-yellow-300"
+>
+  Start Learning
+</Link>                  ) : (
+                    <span className="text-xs font-bold text-gray-600">
+                      Coming Soon
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-14 rounded-3xl border border-gray-800 bg-gray-950 p-7 md:p-9">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-yellow-400">
+            Future Academy Features
+          </p>
+
+          <h2 className="mt-3 text-2xl font-extrabold md:text-3xl">
+            Your learning journey will grow with you
+          </h2>
+
+          <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+            <div className="rounded-2xl bg-black p-5">
+              <div className="text-2xl">📈</div>
+              <p className="mt-3 font-bold">Progress Tracking</p>
+            </div>
+
+            <div className="rounded-2xl bg-black p-5">
+              <div className="text-2xl">🏆</div>
+              <p className="mt-3 font-bold">Achievement Badges</p>
+            </div>
+
+            <div className="rounded-2xl bg-black p-5">
+              <div className="text-2xl">🎓</div>
+              <p className="mt-3 font-bold">Certificates</p>
+            </div>
+
+            <div className="rounded-2xl bg-black p-5">
+              <div className="text-2xl">🧑‍🏫</div>
+              <p className="mt-3 font-bold">Advanced Courses</p>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+    </div>
+  );
+}
+
+export default Learn;

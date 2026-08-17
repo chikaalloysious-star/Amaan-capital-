@@ -1,11 +1,21 @@
 import AdminKYC from "../pages/AdminKYC";import AppShell from "../components/AppShell";
+import MaintenanceGuard from "../components/MaintenanceGuard";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import KYC from "../pages/KYC";
 import Home from "../pages/Home";
+import LearnMore from "../pages/LearnMore";
+import Learn from "../pages/Learn";
+import CryptoFundamentals from "../pages/CryptoFundamentals";
+import CryptoLesson from "../pages/CryptoLesson";
 import Markets from "../pages/Markets";
 import About from "../pages/About";
 import Plans from "../pages/Plans";
 import Contact from "../pages/Contact";
+import Opportunities from "../pages/Opportunities";
+import Terms from "../pages/Terms";
+import Help from "../pages/Help";
+import GrowthPartners from "../pages/GrowthPartners";
+import FAQ from "../pages/FAQ";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
@@ -14,7 +24,6 @@ import Investments from "../pages/Investments";
 import InvestmentDetails from "../pages/InvestmentDetails";
 import Profile from "../pages/Profile";
 import Settings from "../pages/Settings";
-import Notifications from "../pages/Notifications";
 import ForgotPassword from "../pages/ForgotPassword";
 import Deposit from "../pages/Deposit";
 import Withdraw from "../pages/Withdraw";
@@ -23,7 +32,12 @@ import Admin from "../pages/Admin";
 import AdminUser from "../pages/AdminUser";
 import AdminWallets from "../pages/AdminWallets";
 import AdminDeposits from "../pages/AdminDeposits";
+import Referral from "../pages/Referral";
+import AdminSettings from "../pages/AdminSettings";
+import Notifications from "../pages/Notifications";
+import CryptoNews from "../pages/CryptoNews";
 import AdminWithdrawals from "../pages/AdminWithdrawals";
+import Privacy from "../pages/Privacy";
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -37,6 +51,11 @@ function AppRoutes() {
         />
 
         <Route
+          path="/learn-more"
+          element={<LearnMore />}
+        />
+
+        <Route
           path="/markets"
           element={<Markets />}
         />
@@ -45,10 +64,29 @@ function AppRoutes() {
           path="/about"
           element={<About />}
         />
-<Route
-  path="/reset-password"
-  element={<ResetPassword />}
-/>
+
+        <Route
+          path="/reset-password"
+          element={<ResetPassword />}
+        />
+
+        <Route
+          path="/opportunities"
+          element={<Opportunities />}
+        />
+        <Route
+          path="/learn"
+          element={<Learn />}
+        />
+        <Route
+          path="/learn/crypto-fundamentals"
+          element={<CryptoFundamentals />}
+        />
+        <Route
+          path="/learn/crypto-fundamentals/:lessonNumber"
+          element={<CryptoLesson />}
+        />
+
         <Route
           path="/plans"
           element={<Plans />}
@@ -58,10 +96,34 @@ function AppRoutes() {
           path="/contact"
           element={<Contact />}
         />
+
+        <Route
+          path="/terms"
+          element={<Terms />}
+        />
+
+        <Route
+          path="/privacy"
+          element={<Privacy />}
+        />
+
+        <Route
+          path="/growth-partners"
+          element={<GrowthPartners />}
+        />
+
+        <Route
+          path="/help"
+          element={<Help />}
+        />
 <Route
   path="/kyc"
   element={<KYC />}
 />
+        <Route
+          path="/faq"
+          element={<FAQ />}
+        />
         <Route
           path="/login"
           element={<Login />}
@@ -74,14 +136,9 @@ function AppRoutes() {
           path="/register"
           element={<Register />}
         />
-
         {/* USER APPLICATION */}
 
-        <Route element={<AppShell />}>
-<Route
-  path="/notifications"
-  element={<Notifications />}
-/>
+        <Route element={<MaintenanceGuard><AppShell /></MaintenanceGuard>}>
           <Route
             path="/dashboard"
             element={<Dashboard />}
@@ -90,6 +147,11 @@ function AppRoutes() {
           <Route
             path="/markets"
             element={<Markets />}
+          />
+
+          <Route
+            path="/crypto-news"
+            element={<CryptoNews />}
           />
 
           <Route
@@ -115,10 +177,15 @@ function AppRoutes() {
   path="/admin/kyc"
   element={<AdminKYC />}
 />
-          <Route
-            path="/transactions"
-            element={<Transactions />}
-          />
+            <Route
+              path="/referral"
+              element={<Referral />}
+            />
+
+            <Route
+              path="/transactions"
+              element={<Transactions />}
+            />
 
           <Route
             path="/profile"
@@ -131,6 +198,11 @@ function AppRoutes() {
           />
 
         </Route>
+
+        <Route
+          path="/notifications"
+          element={<Notifications />}
+        />
 
         {/* ADMIN PAGES */}
 
@@ -159,6 +231,7 @@ function AppRoutes() {
           element={<AdminWithdrawals />}
         />
 
+          <Route path="/admin/settings" element={<AdminSettings />} />
       </Routes>
     </BrowserRouter>
   );
