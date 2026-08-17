@@ -37,6 +37,7 @@ function Admin() {
 
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [stats, setStats] = useState<AdminStats>(defaultStats);
+  const [pendingGrowthPartners, setPendingGrowthPartners] = useState(0);
 
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [loadingStats, setLoadingStats] = useState(false);
@@ -68,6 +69,17 @@ function Admin() {
       );
     } finally {
       setLoadingUsers(false);
+    }
+  }, []);
+
+  const loadGrowthPartnerCount = useCallback(async () => {
+    const { count, error } = await supabase
+      .from("growth_partner_applications")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "pending");
+
+    if (!error) {
+      setPendingGrowthPartners(count ?? 0);
     }
   }, []);
 
@@ -156,8 +168,9 @@ function Admin() {
       loadUsers(),
       loadStats(),
       loadReferralManagement(),
+      loadGrowthPartnerCount(),
     ]);
-  }, [loadUsers, loadStats, loadReferralManagement]);
+  }, [loadUsers, loadStats, loadReferralManagement, loadGrowthPartnerCount]);
 
   useEffect(() => {
     async function initializeAdmin() {
@@ -470,6 +483,30 @@ function Admin() {
               )}
 
             </Link>
+<Link
+  to="/admin/growth-partners"
+  className="bg-gray-900/70 border border-gray-800 rounded-2xl p-6 hover:border-yellow-500/40 transition"
+>
+  <div className="text-3xl mb-4">
+    🤝
+  </div>
+
+  <h3 className="font-bold text-lg">
+    Growth Partners
+  </h3>
+
+  <p className="text-gray-500 text-sm mt-2">
+    Review and manage local growth partner applications.
+  </p>
+
+  {pendingGrowthPartners > 0 && (
+    <p className="text-yellow-400 text-sm font-semibold mt-4">
+      {pendingGrowthPartners} pending
+    </p>
+  )}
+
+</Link>
+
 <Link
   to="/admin/kyc"
   className="bg-gray-900/70 border border-gray-800 rounded-2xl p-6 hover:border-yellow-500/40 transition"
