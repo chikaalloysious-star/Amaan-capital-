@@ -14,6 +14,7 @@ import Contact from "../pages/Contact";
 import Opportunities from "../pages/Opportunities";
 import Terms from "../pages/Terms";
 import GrowthPartners from "../pages/GrowthPartners";
+import AdminGrowthPartners from "../pages/AdminGrowthPartners";
 import FAQ from "../pages/FAQ";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -110,7 +111,10 @@ function AppRoutes() {
           path="/growth-partners"
           element={<GrowthPartners />}
         />
-
+<Route
+  path="/admin/growth-partners"
+  element={<AdminGrowthPartners />}
+/>
 <Route
   path="/kyc"
   element={<KYC />}
