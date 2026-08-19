@@ -2,14 +2,56 @@ import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
+const countries = [
+  { name: "Philippines", code: "+63", flag: "🇵🇭" },
+  { name: "Nigeria", code: "+234", flag: "🇳🇬" },
+  { name: "United States", code: "+1", flag: "🇺🇸" },
+  { name: "Canada", code: "+1", flag: "🇨🇦" },
+  { name: "United Kingdom", code: "+44", flag: "🇬🇧" },
+  { name: "China", code: "+86", flag: "🇨🇳" },
+  { name: "Hong Kong", code: "+852", flag: "🇭🇰" },
+  { name: "Singapore", code: "+65", flag: "🇸🇬" },
+  { name: "Malaysia", code: "+60", flag: "🇲🇾" },
+  { name: "Indonesia", code: "+62", flag: "🇮🇩" },
+  { name: "Pakistan", code: "+92", flag: "🇵🇰" },
+  { name: "India", code: "+91", flag: "🇮🇳" },
+  { name: "Bangladesh", code: "+880", flag: "🇧🇩" },
+  { name: "United Arab Emirates", code: "+971", flag: "🇦🇪" },
+  { name: "Saudi Arabia", code: "+966", flag: "🇸🇦" },
+  { name: "South Africa", code: "+27", flag: "🇿🇦" },
+  { name: "Ghana", code: "+233", flag: "🇬🇭" },
+  { name: "Kenya", code: "+254", flag: "🇰🇪" },
+  { name: "Australia", code: "+61", flag: "🇦🇺" },
+  { name: "New Zealand", code: "+64", flag: "🇳🇿" },
+  { name: "Japan", code: "+81", flag: "🇯🇵" },
+  { name: "South Korea", code: "+82", flag: "🇰🇷" },
+  { name: "Thailand", code: "+66", flag: "🇹🇭" },
+  { name: "Vietnam", code: "+84", flag: "🇻🇳" },
+  { name: "France", code: "+33", flag: "🇫🇷" },
+  { name: "Germany", code: "+49", flag: "🇩🇪" },
+  { name: "Italy", code: "+39", flag: "🇮🇹" },
+  { name: "Spain", code: "+34", flag: "🇪🇸" },
+  { name: "Netherlands", code: "+31", flag: "🇳🇱" },
+  { name: "Switzerland", code: "+41", flag: "🇨🇭" },
+  { name: "Türkiye", code: "+90", flag: "🇹🇷" },
+  { name: "Brazil", code: "+55", flag: "🇧🇷" },
+  { name: "Mexico", code: "+52", flag: "🇲🇽" },
+  { name: "Russia", code: "+7", flag: "🇷🇺" },
+];
+
 function Register() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const referralCode = searchParams.get("ref")?.trim().toUpperCase() || "";
+  const referralCode =
+    searchParams.get("ref")?.trim().toUpperCase() || "";
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+
+  // Philippines is the default country.
+  const [countryCode, setCountryCode] = useState("+63");
   const [phone, setPhone] = useState("");
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -41,6 +83,13 @@ function Register() {
       return;
     }
 
+    const cleanPhone = phone.replace(/[^\d]/g, "");
+
+    if (cleanPhone.length < 6) {
+      setError("Please enter a valid phone number.");
+      return;
+    }
+
     if (password.length < 6) {
       setError("Password must be at least 6 characters.");
       return;
@@ -56,6 +105,8 @@ function Register() {
       return;
     }
 
+    const fullPhoneNumber = `${countryCode}${cleanPhone}`;
+
     setLoading(true);
 
     try {
@@ -66,7 +117,9 @@ function Register() {
           options: {
             data: {
               referral_code: referralCode || null,
-              phone: phone.trim(),
+              phone: fullPhoneNumber,
+              country_code: countryCode,
+              phone_number: cleanPhone,
             },
           },
         });
@@ -85,7 +138,10 @@ function Register() {
           );
 
           if (referralError) {
-            console.error("Referral application error:", referralError);
+            console.error(
+              "Referral application error:",
+              referralError
+            );
           }
         }
 
@@ -110,12 +166,10 @@ function Register() {
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center px-6 py-12">
-
       <div className="w-full max-w-md">
 
         {/* Brand */}
         <div className="text-center mb-10">
-
           <Link
             to="/"
             className="text-3xl font-extrabold text-yellow-400"
@@ -130,9 +184,7 @@ function Register() {
           <p className="text-gray-400 mt-3">
             Start your journey with Amaan Capital
           </p>
-
         </div>
-
 
         {/* Registration Card */}
         <div className="bg-gray-900/80 border border-gray-800 rounded-3xl p-7 md:p-8 shadow-2xl">
@@ -149,7 +201,6 @@ function Register() {
               </div>
             )}
 
-
             {/* Success */}
             {success && (
               <div className="rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-300">
@@ -157,10 +208,8 @@ function Register() {
               </div>
             )}
 
-
             {/* Full Name */}
             <div>
-
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Full Name
               </label>
@@ -175,13 +224,10 @@ function Register() {
                 autoComplete="name"
                 className="w-full bg-black border border-gray-700 rounded-xl px-4 py-4 text-white outline-none focus:border-yellow-400 transition"
               />
-
             </div>
-
 
             {/* Email */}
             <div>
-
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Email Address
               </label>
@@ -196,34 +242,57 @@ function Register() {
                 autoComplete="email"
                 className="w-full bg-black border border-gray-700 rounded-xl px-4 py-4 text-white outline-none focus:border-yellow-400 transition"
               />
-
             </div>
-
 
             {/* Phone */}
             <div>
-
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Phone Number
               </label>
 
-              <input
-                type="tel"
-                value={phone}
-                onChange={(event) =>
-                  setPhone(event.target.value)
-                }
-                placeholder="+234 800 000 0000"
-                autoComplete="tel"
-                className="w-full bg-black border border-gray-700 rounded-xl px-4 py-4 text-white outline-none focus:border-yellow-400 transition"
-              />
+              <div className="flex gap-2">
 
+                {/* Country Code */}
+                <select
+                  value={countryCode}
+                  onChange={(event) =>
+                    setCountryCode(event.target.value)
+                  }
+                  className="w-[145px] shrink-0 bg-black border border-gray-700 rounded-xl px-3 py-4 text-white outline-none focus:border-yellow-400 transition"
+                  aria-label="Country code"
+                >
+                  {countries.map((country) => (
+                    <option
+                      key={`${country.name}-${country.code}`}
+                      value={country.code}
+                    >
+                      {country.flag} {country.code} {country.name}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Phone Number */}
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(event) =>
+                    setPhone(event.target.value)
+                  }
+                  placeholder="812 345 6789"
+                  autoComplete="tel-national"
+                  inputMode="tel"
+                  className="min-w-0 flex-1 bg-black border border-gray-700 rounded-xl px-4 py-4 text-white outline-none focus:border-yellow-400 transition"
+                />
+
+              </div>
+
+              <p className="text-xs text-gray-500 mt-2">
+                Philippines (+63) is selected by default.
+              </p>
             </div>
-
 
             {/* Password */}
             <div>
-
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Password
               </label>
@@ -238,13 +307,10 @@ function Register() {
                 autoComplete="new-password"
                 className="w-full bg-black border border-gray-700 rounded-xl px-4 py-4 text-white outline-none focus:border-yellow-400 transition"
               />
-
             </div>
-
 
             {/* Confirm Password */}
             <div>
-
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Confirm Password
               </label>
@@ -259,13 +325,10 @@ function Register() {
                 autoComplete="new-password"
                 className="w-full bg-black border border-gray-700 rounded-xl px-4 py-4 text-white outline-none focus:border-yellow-400 transition"
               />
-
             </div>
-
 
             {/* Terms */}
             <div className="flex items-start gap-3 pt-2">
-
               <input
                 type="checkbox"
                 checked={acceptedTerms}
@@ -278,9 +341,7 @@ function Register() {
               <p className="text-sm text-gray-400">
                 I agree to the Amaan Capital terms and privacy policy.
               </p>
-
             </div>
-
 
             {/* Register */}
             <button
@@ -288,15 +349,15 @@ function Register() {
               disabled={loading}
               className="w-full bg-yellow-400 text-black py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 transition disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Creating Account..." : "Create Account"}
+              {loading
+                ? "Creating Account..."
+                : "Create Account"}
             </button>
 
           </form>
 
-
           {/* Login */}
           <div className="text-center mt-7 pt-6 border-t border-gray-800">
-
             <p className="text-gray-400">
               Already have an account?
             </p>
@@ -307,26 +368,21 @@ function Register() {
             >
               Sign in
             </Link>
-
           </div>
 
         </div>
 
-
         {/* Back */}
         <div className="text-center mt-6">
-
           <Link
             to="/"
-            className="text-gray-500 hover:text-white transition"
+            className="text-gray-400 hover:text-white transition"
           >
-            ← Back to Amaan Capital
+            ← Back to Home
           </Link>
-
         </div>
 
       </div>
-
     </div>
   );
 }
