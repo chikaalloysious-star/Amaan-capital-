@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase";
 
 type KYC = {
   id: string;
+  user_id: string;
   full_name: string | null;
   country: string | null;
   status: string | null;
@@ -33,7 +34,7 @@ export default function AdminKYC() {
 
     const { data, error: kycError } = await supabase
       .from("kyc_verifications")
-      .select("id,full_name,country,status")
+      .select("id,user_id,full_name,country,status")
       .order("created_at", { ascending: false });
 
     if (kycError) {
@@ -51,6 +52,13 @@ export default function AdminKYC() {
   ) {
     setError("");
 
+    const currentKyc = kyc.find((item) => item.id === id);
+
+    if (!currentKyc) {
+      setError("KYC application not found.");
+      return;
+    }
+
     const { error: updateError } = await supabase
       .from("kyc_verifications")
       .update({ status })
@@ -58,6 +66,28 @@ export default function AdminKYC() {
 
     if (updateError) {
       setError(updateError.message);
+      return;
+    }
+
+    const { error: auditError } = await supabase.rpc(
+      "create_admin_audit_log",
+      {
+        p_action:
+          status === "approved"
+            ? "KYC Approved"
+            : "KYC Rejected",
+        p_target_user_id: currentKyc.user_id,
+        p_description:
+          `KYC application ${id} for ${currentKyc.full_name || "user"} was ${status}.`,
+      }
+    );
+
+    if (auditError) {
+      console.error("KYC audit log error:", auditError);
+      setError(
+        `KYC updated, but audit log failed: ${auditError.message}`
+      );
+      await load();
       return;
     }
 

@@ -29,6 +29,7 @@ import Deposit from "../pages/Deposit";
 import Withdraw from "../pages/Withdraw";
 import ResetPassword from "../pages/ResetPassword";
 import Admin from "../pages/Admin";
+import AdminAuditLogs from "../pages/AdminAuditLogs";
 import AdminUser from "../pages/AdminUser";
 import AdminWallets from "../pages/AdminWallets";
 import AdminDeposits from "../pages/AdminDeposits";
@@ -204,6 +205,11 @@ function AppRoutes() {
         />
 
         {/* ADMIN PAGES */}
+
+        <Route
+          path="/admin/audit-logs"
+          element={<AdminAuditLogs />}
+        />
 
         <Route
           path="/admin"

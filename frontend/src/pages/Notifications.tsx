@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import BackButton from "../components/BackButton";
 
 type Notification = {
   id: string;
@@ -79,6 +80,7 @@ function Notifications() {
   return (
     <div className="min-h-screen bg-black px-5 py-8 text-white">
       <div className="mx-auto max-w-3xl">
+        <BackButton />
         <div className="mb-8 flex items-center justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-yellow-400">

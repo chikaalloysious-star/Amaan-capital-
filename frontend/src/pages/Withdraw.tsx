@@ -57,9 +57,9 @@ function Withdraw() {
         return;
       }
 
-      const { data, error: balanceError } = await supabase
+      const { data: account, error: balanceError } = await supabase
         .from("account_balances")
-        .select("balance,currency")
+        .select("currency")
         .eq("user_id", user.id)
         .maybeSingle();
 
@@ -67,10 +67,55 @@ function Withdraw() {
         throw balanceError;
       }
 
-      if (data) {
-        setBalance(Number(data.balance || 0));
-        setCurrency(data.currency || "USDT");
+      const userCurrency = account?.currency || "USDT";
+      setCurrency(userCurrency);
+
+      const { data: investments, error: investmentsError } =
+        await supabase
+          .from("investments")
+          .select(
+            "amount,currency,roi_rate,started_at,ends_at,status"
+          )
+          .eq("user_id", user.id)
+          .eq("currency", userCurrency)
+          .in("status", ["active", "completed"]);
+
+      if (investmentsError) {
+        throw investmentsError;
       }
+
+      const now = new Date();
+
+      /*
+       * Option B:
+       * Profit becomes withdrawable only after
+       * the investment reaches its 30-day maturity.
+       */
+      const earnedProfit = (investments || []).reduce(
+        (total, investment) => {
+          const amount = Number(investment.amount || 0);
+          const roiRate = Number(investment.roi_rate || 0);
+
+          if (
+            !amount ||
+            !roiRate ||
+            !investment.ends_at
+          ) {
+            return total;
+          }
+
+          const ends = new Date(investment.ends_at);
+
+          if (now < ends) {
+            return total;
+          }
+
+          return total + amount * (roiRate / 100) * 30;
+        },
+        0
+      );
+
+      setBalance(earnedProfit);
     } catch (err) {
       setError(
         err instanceof Error
@@ -118,7 +163,7 @@ function Withdraw() {
     }
 
     if (withdrawalAmount > balance) {
-      setError("Insufficient available balance.");
+      setError("Insufficient withdrawable balance.");
       return;
     }
 
@@ -236,12 +281,38 @@ function Withdraw() {
         <div className="mt-8 rounded-3xl border border-yellow-500/20 bg-gray-950 p-6">
 
           <p className="text-sm text-gray-500">
-            Available Balance
+            Withdrawable Balance
           </p>
 
           <p className="mt-2 text-3xl font-extrabold text-yellow-400">
             {balance.toFixed(2)} {currency}
           </p>
+
+          <div className="mt-5 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-5">
+
+            <div className="flex items-start gap-3">
+              <span className="text-xl">🔒</span>
+
+              <div>
+                <p className="font-bold text-yellow-400">
+                  Investment earnings are locked until maturity
+                </p>
+
+                <p className="mt-2 text-sm leading-6 text-gray-400">
+                  Your investment and its earnings remain locked
+                  until the investment reaches its maturity date.
+                  Once it matures, eligible earnings will become
+                  available in your withdrawable balance.
+                </p>
+
+                <p className="mt-3 text-sm font-semibold text-gray-300">
+                  Withdrawable earnings are only available after
+                  the investment period is completed.
+                </p>
+              </div>
+            </div>
+
+          </div>
 
         </div>
 

@@ -10,6 +10,7 @@ type Plan = {
   roi: number;
   duration: number;
   featured?: boolean;
+  minimumWithdrawal: number;
 };
 
 const plans: Plan[] = [
@@ -17,44 +18,50 @@ const plans: Plan[] = [
     name: "Starter",
     min: 100,
     max: 999,
-    roi: 0.25,
-    duration: 60,
+    roi: 0.40,
+    duration: 30,
+    minimumWithdrawal: 25,
   },
   {
     name: "Silver",
     min: 1000,
     max: 9999,
-    roi: 0.35,
-    duration: 90,
+    roi: 0.45,
+    duration: 30,
+    minimumWithdrawal: 50,
   },
   {
     name: "Gold",
     min: 10000,
     max: 49999,
-    roi: 0.5,
-    duration: 120,
+    roi: 0.50,
+    duration: 30,
+    minimumWithdrawal: 100,
     featured: true,
   },
   {
     name: "Platinum",
     min: 50000,
     max: 99999,
-    roi: 0.65,
-    duration: 150,
+    roi: 0.55,
+    duration: 30,
+    minimumWithdrawal: 250,
   },
   {
     name: "Diamond",
     min: 100000,
     max: 599999,
-    roi: 0.8,
-    duration: 180,
+    roi: 0.60,
+    duration: 30,
+    minimumWithdrawal: 500,
   },
   {
     name: "Elite",
     min: 600000,
     max: 600000,
-    roi: 1,
-    duration: 365,
+    roi: 0.65,
+    duration: 30,
+    minimumWithdrawal: 1000,
   },
 ];
 
@@ -161,7 +168,6 @@ function Plans() {
         p_plan_name: selectedPlan.name,
         p_amount: investmentAmount,
         p_currency: currency,
-        p_duration_days: selectedPlan.duration,
       }
     );
 
@@ -308,13 +314,35 @@ function Plans() {
                 </span>
               </div>
 
+              <div className="mb-4 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-lg">🔒</span>
+
+                  <div>
+                    <p className="font-semibold text-yellow-400">
+                      Locked until maturity
+                    </p>
+
+                    <p className="mt-1 text-sm leading-5 text-gray-400">
+                      Your investment and earnings remain locked
+                      until the {plan.duration}-day investment period
+                      is completed.
+                    </p>
+
+                    <p className="mt-2 text-sm font-medium text-gray-300">
+                      Earnings become withdrawable after maturity.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               <div className="mb-4 flex items-center justify-between">
                 <span className="text-gray-400">
                   {t.minimumWithdrawal}
                 </span>
 
                 <span className="font-semibold">
-                  25 USDT
+                  {formatUSDT(plan.minimumWithdrawal)} USDT
                 </span>
               </div>
 

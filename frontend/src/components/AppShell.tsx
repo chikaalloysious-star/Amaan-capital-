@@ -255,18 +255,42 @@ const accountNavigation = [
 
 {/* APPLICATION TOP BAR */}
 <header className="sticky top-0 z-40 border-b border-gray-800 bg-black/95 backdrop-blur">
-  <div className="flex items-center justify-between px-5 py-4">
-    <Link
-      to="/dashboard"
-      className="text-xl font-extrabold text-yellow-400"
-    >
-      Amaan Capital
-    </Link>
+  <div className="flex items-center justify-between px-4 py-3 sm:px-5 sm:py-4">
+
+    <div className="flex min-w-0 items-center gap-3">
+
+      {location.pathname !== "/dashboard" && (
+        <button
+          type="button"
+          onClick={() => {
+            if (window.history.length > 1) {
+              navigate(-1);
+            } else {
+              navigate("/dashboard");
+            }
+          }}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-gray-800 bg-gray-950 text-xl font-bold text-gray-300 transition hover:border-yellow-500/40 hover:bg-gray-900 hover:text-yellow-400"
+          aria-label="Go back"
+          title="Go back"
+        >
+          ←
+        </button>
+      )}
+
+      <Link
+        to="/dashboard"
+        className="truncate text-xl font-extrabold text-yellow-400"
+      >
+        Amaan Capital
+      </Link>
+
+    </div>
 
     <div className="flex items-center gap-2">
       <NotificationBell />
       <PageMenu />
     </div>
+
   </div>
 </header>
         <main className="pb-24 lg:pb-0">
